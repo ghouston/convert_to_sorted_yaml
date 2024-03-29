@@ -1,11 +1,12 @@
 require 'json'
 require 'yaml'
+require 'debug'
 
 class ConvertToYaml
     attr_accessor :filename
     def initialize(filename)
         @filename = filename
-        @unhandled = [] # Keep track of types that didn't need special handling
+        @unhandled = [] # Keep track of types that didn't need spec
     end
 
     def convert
@@ -21,7 +22,11 @@ class ConvertToYaml
     def deep_convert_to_json(source)
         if source.is_a? String
             begin
-                result = JSON.parse(source)
+                if source =~ /^[\s\n]*[\{\[]/
+                    result = JSON.parse(source)
+                else
+                    return source
+                end
             rescue
                 # failed to parse JSON, try to fix it
                 # note, cant fix earlier since it might be nested json strings and the gsub would break it
@@ -67,18 +72,27 @@ class ConvertToYaml
         end
 
         if source.is_a? Array
-            result = source.sort_by do |a,b|
+            result = []
+            source.each do |value|
+                if value.is_a?(Enumerable)
+                    result << deep_sort(value)
+                else
+                    result << value
+                end
+            end
+
+            result.sort! do |a,b|
                 if a.is_a?(Enumerable) && b.is_a?(Enumerable)
-                    return a <=> b
+                    a.to_a <=> b.to_a
                 elsif a.is_a?(Enumerable) && !b.is_a?(Enumerable)
-                    return 1
+                    1
                 elsif !a.is_a?(Enumerable) && b.is_a?(Enumerable)
-                    return -1
+                    -1
                 else
                     a <=> b
                 end
             end
-            return result.map {|e| deep_sort(e)}
+            return result
         end
 
         @unhandled << source.class
@@ -86,6 +100,8 @@ class ConvertToYaml
     end
 end
 
-Dir.glob('*.code-profile').each do |filename|
-    ConvertToYaml.new(filename).convert
+if __FILE__ == $PROGRAM_NAME
+    Dir.glob('*.code-profile').each do |filename|
+        ConvertToYaml.new(filename).convert
+    end
 end
