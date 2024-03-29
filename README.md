@@ -1,10 +1,9 @@
 # ConvertToSortedYaml
 
-A script to convert _all_ `json` or `code-profile` files into `yml` file which is sorted. The yaml file is saved into the same folder with the extension `.yml` appended.
+A script to convert _all_ `*.json` or `*.code-profile` files into `*.yml` files with the contents sorted. The yaml file is saved into the same folder with the extension `.yml` appended. Example: `default.code-profile` will result in `default.code-profile.yml`.
 
-The sorted yml file is useful for comparing in a diff tool.
+The sorted yml file is useful for comparing in a diff tool.  With this you can see the differences between VS Code Profiles, or other json files.
 
-This is useful for comparing VS Code Profiles, or other json files.
 
 # Usage
 
@@ -15,14 +14,15 @@ To compare VS Code profiles:
 
 To run the tests:
 1. run `bundle install`
-2. run `
+2. run `bundle exec rspec convert_to_sorted_yaml_test.rb`
+
 # Technical Notes
 
-- VS Code Profiles has strings of json nested within other json elements. Extra steps were taken to convert these nested strings back into json for further sorting.
+- VS Code profiles exports contain strings of json nested within other json elements. Extra steps were taken to convert these nested strings back into json for further sorting.
 
 # License
 
-(The MIT License + Free Software Foundation Advertising Prohibition)
+(The MIT License)
 
 Copyright (c) 2024 Gregory N. Houston
 
@@ -43,7 +43,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
-
-Except as contained in this notice, the name(s) of the above copyright holders
-shall not be used in advertising or otherwise to promote the sale, use or other
-dealings in this Software without prior written authorization.
