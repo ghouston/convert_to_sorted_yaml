@@ -2,7 +2,7 @@ require 'json'
 require 'yaml'
 require 'debug'
 
-class ConvertToYaml
+class ConvertToSortedYaml
     attr_accessor :filename
     def initialize(filename)
         @filename = filename
@@ -83,13 +83,9 @@ class ConvertToYaml
 
             result.sort! do |a,b|
                 if a.is_a?(Enumerable) && b.is_a?(Enumerable)
-                    a.to_a <=> b.to_a
-                elsif a.is_a?(Enumerable) && !b.is_a?(Enumerable)
-                    1
-                elsif !a.is_a?(Enumerable) && b.is_a?(Enumerable)
-                    -1
+                    a.to_a <=> b.to_a || 0 # to keep it simple, if the array compare fails, return 0
                 else
-                    a <=> b
+                    a <=> b || 0 # to keep it simple, if the compare fails, return 0
                 end
             end
             return result
@@ -101,7 +97,8 @@ class ConvertToYaml
 end
 
 if __FILE__ == $PROGRAM_NAME
-    Dir.glob('*.code-profile').each do |filename|
-        ConvertToYaml.new(filename).convert
+    files = Dir.glob('*.code-profile') + Dir.glob('*.json')
+    files.each do |filename|
+        ConvertToSortedYaml.new(filename).convert
     end
 end

@@ -1,9 +1,9 @@
 require 'json'
-require './convert_to_yaml'
+require './convert_to_sorted_yaml'
 
 # Test case for deep_convert_to_json method
-describe ConvertToYaml do
-  subject { ConvertToYaml.new('not-used.file-name') }
+describe ConvertToSortedYaml do
+  subject { ConvertToSortedYaml.new('not-used.file-name') }
 
   describe '#deep_convert_to_json' do
     it 'should convert a JSON string to a nested hash' do
